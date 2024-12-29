@@ -4,6 +4,10 @@
 // Variables
 #define DHTPin 5
 #define DHTType DHT22 
+#define relayHeater 3
+#define relayWind 3
+#define relayWaterPump 3
+#define relayLight 3
 
 const int soilHumidityPin = A0;
 int soilHumidityValue = 0;
@@ -17,6 +21,8 @@ DHT dht(DHTPin, DHTType);
 void setup () {
   
   Serial.begin(9600);
+  Serial.println();
+  Serial.println("==========================");
   Serial.println("Start of the program");
   Serial.println("==========================");
   Serial.println();
@@ -26,12 +32,21 @@ void setup () {
 
   pinMode(soilHumidityPin, INPUT);
 
+  // Relay Pin setup
+  digitalWrite(relayHeater, HIGH);
+  digitalWrite(relayWind, HIGH);
+  digitalWrite(relayWaterPump, HIGH);
+  digitalWrite(relayLight, HIGH);
+  pinMode(relayHeater, OUTPUT);
+  pinMode(relayWind, OUTPUT);
+  pinMode(relayWaterPump, OUTPUT);
+  pinMode(relayLight, OUTPUT);
+
 }
  
 // Min Loop
 void loop () {
-  //delay(1000);
-  
+
   // Getting data
   soilHumidityValue = analogRead(soilHumidityPin); // Get soil humidity sensor value
   RelativeHumidity = dht.readHumidity();     // Get Humidity value in % 
@@ -51,14 +66,43 @@ void loop () {
   //soilHumidityValue = constraint(soilHumidityValue, 0, 1023); // Keep values within a range
   soilHumidityValue = map(soilHumidityValue, 0, 1023, 100, 0); // Mapping of values
 
+
   // Display of values
+  Serial.print("Version 02 ");
   Serial.print("Relative Humidity = "); Serial.print(RelativeHumidity); Serial.println(" %");
   Serial.print("Temperature = "); Serial.print(TempCelsius); Serial.println(" °C");
   Serial.print("Felt temperature = "); Serial.print(feltTempCelsius); Serial.println(" °C");
   Serial.print("Soil humidity = "); Serial.print(soilHumidityValue); Serial.println(" %");
   Serial.println();
 
+    // Relay action
+  Serial.print("Action on Heater : ");  
+  digitalWrite(relayHeater, HIGH);
+  delay(2000);
+  digitalWrite(relayHeater, LOW);
+  delay(2000);
+
+   Serial.print("Action on Wind : ");
+  digitalWrite(relayWind, HIGH);
+  delay(2000);
+  digitalWrite(relayWind, LOW);
+  delay(2000);
+
+  Serial.print("Action on Water Pump : ");
+  digitalWrite(relayWaterPump, HIGH);
+  delay(2000);
+  digitalWrite(relayWaterPump, LOW);
+  delay(2000);
+
+  Serial.print("Action on Light : ");
+  digitalWrite(relayLight, HIGH);
+  delay(2000);
+  digitalWrite(relayLight, LOW);
+  delay(2000);
+
   // Delay of 2 second, to match minimum delay reading of DHT22
   delay(2000);
+  Serial.print("End of Process")
+  Serial.println();
 }
 
