@@ -1,3 +1,4 @@
+
 // Librairies import
 #include <DHT.h>
 
@@ -24,6 +25,7 @@ void setup () {
   Serial.println();
   Serial.println("==========================");
   Serial.println("Start of the program");
+  Serial.println("Version 02 ");
   Serial.println("==========================");
   Serial.println();
 
@@ -68,7 +70,6 @@ void loop () {
 
 
   // Display of values
-  Serial.print("Version 02 ");
   Serial.print("Relative Humidity = "); Serial.print(RelativeHumidity); Serial.println(" %");
   Serial.print("Temperature = "); Serial.print(TempCelsius); Serial.println(" °C");
   Serial.print("Felt temperature = "); Serial.print(feltTempCelsius); Serial.println(" °C");
@@ -105,4 +106,3 @@ void loop () {
   Serial.print("End of Process")
   Serial.println();
 }
-
