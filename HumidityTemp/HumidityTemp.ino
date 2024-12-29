@@ -1,4 +1,3 @@
-
 // Librairies import
 #include <DHT.h>
 
@@ -6,9 +5,9 @@
 #define DHTPin 5
 #define DHTType DHT22 
 #define relayHeater 3
-#define relayWind 3
-#define relayWaterPump 3
-#define relayLight 3
+#define relayWind 4
+#define relayWaterPump 6
+// #define relayLight 7
 
 const int soilHumidityPin = A0;
 int soilHumidityValue = 0;
@@ -25,7 +24,7 @@ void setup () {
   Serial.println();
   Serial.println("==========================");
   Serial.println("Start of the program");
-  Serial.println("Version 02 ");
+  Serial.println("Version 03 ");
   Serial.println("==========================");
   Serial.println();
 
@@ -38,11 +37,11 @@ void setup () {
   digitalWrite(relayHeater, HIGH);
   digitalWrite(relayWind, HIGH);
   digitalWrite(relayWaterPump, HIGH);
-  digitalWrite(relayLight, HIGH);
+  // digitalWrite(relayLight, HIGH);
   pinMode(relayHeater, OUTPUT);
   pinMode(relayWind, OUTPUT);
   pinMode(relayWaterPump, OUTPUT);
-  pinMode(relayLight, OUTPUT);
+  // pinMode(relayLight, OUTPUT);
 
 }
  
@@ -76,33 +75,46 @@ void loop () {
   Serial.print("Soil humidity = "); Serial.print(soilHumidityValue); Serial.println(" %");
   Serial.println();
 
-    // Relay action
-  Serial.print("Action on Heater : ");  
-  digitalWrite(relayHeater, HIGH);
-  delay(2000);
-  digitalWrite(relayHeater, LOW);
-  delay(2000);
+  // Relay action
+  if (TempCelsius < 15.0) {
+    Serial.print("Action on Heater : Start");  
+    digitalWrite(relayHeater, HIGH);
+    delay(2000);
+    digitalWrite(relayHeater, LOW);
+    delay(2000);
+    } 
+    else {Serial.print("Action on Heater : Not required");};
 
-   Serial.print("Action on Wind : ");
-  digitalWrite(relayWind, HIGH);
-  delay(2000);
-  digitalWrite(relayWind, LOW);
-  delay(2000);
+  if (RelativeHumidity < 40.0) {
+    Serial.print("Action on Wind : Start");  
+    digitalWrite(relayWind, HIGH);
+    delay(2000);
+    digitalWrite(relayWind, LOW);
+    delay(2000);
+    } 
+    else {Serial.print("Action on Wind : Not required");};
 
-  Serial.print("Action on Water Pump : ");
-  digitalWrite(relayWaterPump, HIGH);
-  delay(2000);
-  digitalWrite(relayWaterPump, LOW);
-  delay(2000);
+   if (soilHumidityValue < 40.0) {
+    Serial.print("Action on Water Pump : Start");  
+    digitalWrite(relayWaterPump, HIGH);
+    delay(2000);
+    digitalWrite(relayWaterPump, LOW);
+    delay(2000);
+    } 
+    else {Serial.print("Action on WaterPump : Not required");};
 
-  Serial.print("Action on Light : ");
-  digitalWrite(relayLight, HIGH);
-  delay(2000);
-  digitalWrite(relayLight, LOW);
-  delay(2000);
+  // if (TempCelsius < 15.0) {
+  //   Serial.print("Action on Light : Start");  
+  //   digitalWrite(relayLight, HIGH);
+  //   delay(2000);
+  //   digitalWrite(relayLight, LOW);
+  //   delay(2000);
+  //   } 
+  //   else {Serial.print("Action on Light : Not required");};
+
 
   // Delay of 2 second, to match minimum delay reading of DHT22
   delay(2000);
-  Serial.print("End of Process")
+  Serial.print("End of Process");
   Serial.println();
 }
