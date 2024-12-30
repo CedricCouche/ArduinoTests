@@ -5,7 +5,7 @@
 #define DHTPin 5
 #define DHTType DHT22 
 #define relayHeater 3
-#define relayWind 4
+#define relayFan 4
 #define relayWaterPump 6
 // #define relayLight 7
 
@@ -35,11 +35,11 @@ void setup () {
 
   // Relay Pin setup
   digitalWrite(relayHeater, HIGH);
-  digitalWrite(relayWind, HIGH);
+  digitalWrite(relayFan, HIGH);
   digitalWrite(relayWaterPump, HIGH);
   // digitalWrite(relayLight, HIGH);
   pinMode(relayHeater, OUTPUT);
-  pinMode(relayWind, OUTPUT);
+  pinMode(relayFan, OUTPUT);
   pinMode(relayWaterPump, OUTPUT);
   // pinMode(relayLight, OUTPUT);
 
@@ -86,13 +86,13 @@ void loop () {
     else {Serial.print("Action on Heater : Not required");};
 
   if (RelativeHumidity < 40.0) {
-    Serial.print("Action on Wind : Start");  
-    digitalWrite(relayWind, HIGH);
+    Serial.print("Action on Fan : Start");  
+    digitalWrite(relayFan, HIGH);
     delay(2000);
-    digitalWrite(relayWind, LOW);
+    digitalWrite(relayFan, LOW);
     delay(2000);
     } 
-    else {Serial.print("Action on Wind : Not required");};
+    else {Serial.print("Action on Fan : Not required");};
 
    if (soilHumidityValue < 40.0) {
     Serial.print("Action on Water Pump : Start");  
