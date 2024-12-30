@@ -7,12 +7,14 @@
 #define relayHeater 3
 #define relayFan 4
 #define relayWaterPump 6
-// #define relayLight 7
+#define relayLight 7
 
 const int soilHumidityPin = A0;
 int soilHumidityValue = 0;
 float RelativeHumidity = 0.0;
 float TempCelsius = 0.0;
+int light_sensor = A3; 
+
 
 // DHT-22  initialization
 DHT dht(DHTPin, DHTType);
@@ -34,14 +36,14 @@ void setup () {
   pinMode(soilHumidityPin, INPUT);
 
   // Relay Pin setup
-  digitalWrite(relayHeater, HIGH);
-  digitalWrite(relayFan, HIGH);
-  digitalWrite(relayWaterPump, HIGH);
-  // digitalWrite(relayLight, HIGH);
+  digitalWrite(relayHeater, HIGH); // Relay config : Normally Closed
+  digitalWrite(relayFan, HIGH);    // Relay config : Normally Closed
+  digitalWrite(relayWaterPump, HIGH); // Relay config : Normally Closed
+  digitalWrite(relayLight, HIGH); // Relay config : Normally OPEN
   pinMode(relayHeater, OUTPUT);
   pinMode(relayFan, OUTPUT);
   pinMode(relayWaterPump, OUTPUT);
-  // pinMode(relayLight, OUTPUT);
+  pinMode(relayLight, OUTPUT);
 
 }
  
@@ -50,8 +52,10 @@ void loop () {
 
   // Getting data
   soilHumidityValue = analogRead(soilHumidityPin); // Get soil humidity sensor value
+  int raw_lightValue = analogRead(light_sensor); // Get light sensor value
   RelativeHumidity = dht.readHumidity();     // Get Humidity value in % 
   TempCelsius = dht.readTemperature();      // Get temperature in Celsius degree
+  
 
   // Check if data are received
   if (isnan(RelativeHumidity) || isnan(TempCelsius)) {
@@ -59,6 +63,9 @@ void loop () {
     delay(2000);
     return;         // If no data are received, we wait for 2 seconds, then the loop restard
   }
+
+  // Map of  light value
+  int lightValue = map(raw_lightValue, 0, 1023, 0, 100); // map the value from 0, 1023 to 0, 100
 
   // Conversion to felt temperature
   float feltTempCelsius = dht.computeHeatIndex(TempCelsius, RelativeHumidity, false); // Le "false" est là pour dire qu'on travaille en °C, et non en °F
@@ -73,6 +80,7 @@ void loop () {
   Serial.print("Temperature = "); Serial.print(TempCelsius); Serial.println(" °C");
   Serial.print("Felt temperature = "); Serial.print(feltTempCelsius); Serial.println(" °C");
   Serial.print("Soil humidity = "); Serial.print(soilHumidityValue); Serial.println(" %");
+  Serial.print("Light = "); Serial.print(lightValue); Serial.println(" %");
   Serial.println();
 
   // Relay action
@@ -103,14 +111,14 @@ void loop () {
     } 
     else {Serial.print("Action on WaterPump : Not required");};
 
-  // if (TempCelsius < 15.0) {
-  //   Serial.print("Action on Light : Start");  
-  //   digitalWrite(relayLight, HIGH);
-  //   delay(2000);
-  //   digitalWrite(relayLight, LOW);
-  //   delay(2000);
-  //   } 
-  //   else {Serial.print("Action on Light : Not required");};
+   if (lightValue > 50) {
+    Serial.print("Action on Light : switch off light");  
+    digitalWrite(relayLight, HIGH);
+    delay(2000);
+    digitalWrite(relayLight, LOW);
+    delay(2000);
+    } 
+    else {Serial.print("Action on Light : keep light on");};
 
 
   // Delay of 2 second, to match minimum delay reading of DHT22
